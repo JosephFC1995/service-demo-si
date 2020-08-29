@@ -17,13 +17,11 @@ const port = process.env.SERVER_PORT ? process.env.SERVER_PORT : 5000;
 
 app.disable("x-powered-by");
 app.use(morgan("combined"));
-app.use(
-	bodyParser.urlencoded({
-		limit: "100mb",
-		extended: true,
-		parameterLimit: 1000000000,
-	})
-);
+bodyParser = {
+	json: { limit: "50mb", extended: true },
+	urlencoded: { limit: "50mb", extended: true },
+};
+app.use(bodyParser.urlencoded(bodyParser));
 // app.use(bodyParser.json({ limit: "100mb", extended: true }));
 app.use(cookieParser());
 app.use(cors());

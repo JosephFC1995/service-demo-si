@@ -21,7 +21,7 @@ bodyParser = {
 	json: { limit: "50mb", extended: true },
 	urlencoded: { limit: "50mb", extended: true },
 };
-app.use(bodyParser.urlencoded(bodyParser));
+app.use(bodyParser);
 // app.use(bodyParser.json({ limit: "100mb", extended: true }));
 app.use(cookieParser());
 app.use(cors());

@@ -42,7 +42,6 @@ exp.uploadVideo = async (req, res) => {
 		new_name + "_" + name + "_" + moment().toDate().getTime() + "." + extension,
 		type
 	);
-	console.log(update_file_aws);
 
 	let newDataFile = {
 		name: new_name + "." + extension,
@@ -50,7 +49,7 @@ exp.uploadVideo = async (req, res) => {
 		size: size,
 		encoding: "7bit",
 		truncated: 0,
-		extension: extension,
+		extension: new_name + "_" + name + "_" + moment().toDate().getTime() + "." + extension,,
 		mimetype: type,
 		path: update_file_aws.Location,
 	};

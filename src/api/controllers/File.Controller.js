@@ -1,6 +1,6 @@
 const db = require("../config/index");
 require("dotenv").config();
-const { randomString, uploadVideoAWS } = require("./Index.Controller");
+const { randomString, uploadFilesAWS } = require("./Index.Controller");
 const { Op } = db.Sequelize;
 const { Users, UserRole, File } = db;
 const moment = require("moment");
@@ -23,7 +23,7 @@ exp.delete = (req, res) => {};
  * @param {body} req
  * @param {*} res
  */
-exp.uploadVideo = async (req, res) => {
+exp.uploadFile = async (req, res) => {
 	if (!req.body || Object.keys(req.body).length === 0) {
 		return res.status(400).send({
 			error: false,
@@ -37,12 +37,11 @@ exp.uploadVideo = async (req, res) => {
 	let mimetype_split = type.split("/");
 	let extension = mimetype_split[1];
 	let new_name = randomString(50);
-	let update_file_aws = await uploadVideoAWS(
+	let update_file_aws = await uploadFilesAWS(
 		data,
 		new_name + "_" + name + "_" + moment().toDate().getTime() + "." + extension,
 		type
 	);
-	console.log(update_file_aws);
 
 	let newDataFile = {
 		name:

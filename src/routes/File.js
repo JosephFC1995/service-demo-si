@@ -4,7 +4,7 @@ module.exports = (function () {
 	const app = require("express").Router();
 	const c_file = require("../api/controllers/File.Controller");
 
-	app.post("/upload/video", c_file.uploadVideo);
+	app.post("/upload/video", c_file.uploadFile);
 
 	return app;
 })();

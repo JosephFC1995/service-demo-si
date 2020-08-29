@@ -32,25 +32,36 @@ exec_funtions.randomString = (length) => {
  * @param {*} type
  * @returns
  */
-exec_funtions.uploadVideoAWS = (base64, fileName, type) => {
+exec_funtions.uploadFilesAWS = (base64, fileName, type) => {
 	// AWS
 	const ID = process.env.AWS_ID;
 	const SECRET = process.env.AWS_SECRET;
 	const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
-
+	//
+	let mimetype_split = type.split("/");
+	const type_file = mimetype_split[0];
+	let folder_file_aws =
+		type_file == "image"
+			? "images"
+			: type_file == "video"
+			? "videos"
+			: type_file == "audio"
+			? "audios"
+			: "otros";
 	const s3 = new AWS.S3({
 		accessKeyId: ID,
 		secretAccessKey: SECRET,
 	});
 
-	const base64Data = new Buffer.from(
-		base64.replace(/^data:video\/\w+;base64,/, ""),
-		"base64"
-	);
+	// const base64Data = new Buffer.from(
+	// 	base64.replace(/^data:video\/\w+;base64,/, ""),
+	// 	"base64"
+	// );
+	const base64Data = new Buffer.from(base64.split(",")[1], "base64");
 
 	const params = {
 		Bucket: BUCKET_NAME,
-		Key: "videos/" + fileName,
+		Key: folder_file_aws + "/" + fileName,
 		Body: base64Data,
 		ContentEncoding: "base64",
 		ContentType: type,

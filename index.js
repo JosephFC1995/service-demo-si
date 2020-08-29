@@ -19,12 +19,12 @@ app.disable("x-powered-by");
 app.use(morgan("combined"));
 app.use(
 	bodyParser.urlencoded({
-		limit: "10mb",
+		limit: "100mb",
 		extended: true,
 		parameterLimit: 1000000000,
 	})
 );
-app.use(bodyParser.json({ limit: "10mb", extended: true }));
+// app.use(bodyParser.json({ limit: "100mb", extended: true }));
 app.use(cookieParser());
 app.use(cors());
 

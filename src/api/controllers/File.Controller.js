@@ -93,7 +93,6 @@ exp.uploadFileBites = async (req, res) => {
 			messageDeveloper: "No se cargó ningún archivo",
 		});
 	}
-	console.log(req);
 	if (!req.body || Object.keys(req.body).length === 0) {
 		return res.status(400).send({
 			error: true,

@@ -80,4 +80,47 @@ exec_funtions.uploadFilesAWS = (base64, fileName, type) => {
 	);
 };
 
+exec_funtions.uploadFilesBitesAWS = (data, fileName, type) => {
+	// AWS
+	const ID = process.env.AWS_ID;
+	const SECRET = process.env.AWS_SECRET;
+	const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
+	//
+	let mimetype_split = type.split("/");
+	const type_file = mimetype_split[0];
+	let folder_file_aws =
+		type_file == "image"
+			? "images"
+			: type_file == "video"
+			? "videos"
+			: type_file == "audio"
+			? "audios"
+			: "otros";
+	const s3 = new AWS.S3({
+		accessKeyId: ID,
+		secretAccessKey: SECRET,
+	});
+
+	const dataBuffer = data;
+
+	const params = {
+		Bucket: BUCKET_NAME,
+		Key: folder_file_aws + "/" + fileName,
+		Body: dataBuffer,
+		ContentEncoding: "base64",
+		ContentType: type,
+		ACL: "public-read",
+	};
+
+	var reques_aws = s3.upload(params);
+	var result = reques_aws.promise();
+	return result.then(
+		(data) => {
+			return data;
+		},
+		(error) => {
+			console.log(error);
+		}
+	);
+};
 module.exports = exec_funtions;

@@ -10,14 +10,20 @@ const express = require("express"),
 	jwt = require("express-jwt"),
 	consola = require("consola"),
 	cors = require("cors"),
-	fs = require("fs");
+	fs = require("fs"),
+	fileUpload = require("express-fileupload");
 var unless = require("express-unless");
 
 const port = process.env.SERVER_PORT ? process.env.SERVER_PORT : 5000;
 
 app.disable("x-powered-by");
 app.use(morgan("combined"));
-
+// default options
+app.use(
+	fileUpload({
+		limits: { fileSize: 100 * 1024 * 1024 },
+	})
+);
 app.use(bodyParser.json({ limit: "100mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 app.use(cookieParser());
@@ -36,7 +42,9 @@ app.use(
 			"/",
 			"/uploads/*",
 			"/file/upload/video",
+			"/file/upload/video-bites",
 			"/api/v1/file/upload/video",
+			"/api/v1/file/upload/video-bites",
 			"/robots.txt",
 			"/favicon.ico",
 		],

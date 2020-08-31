@@ -1,6 +1,10 @@
 const db = require("../config/index");
 require("dotenv").config();
-const { randomString, uploadFilesAWS } = require("./Index.Controller");
+const {
+	randomString,
+	uploadFilesAWS,
+	uploadFilesBitesAWS,
+} = require("./Index.Controller");
 const { Op } = db.Sequelize;
 const { Users, UserRole, File } = db;
 const moment = require("moment");
@@ -26,7 +30,7 @@ exp.delete = (req, res) => {};
 exp.uploadFile = async (req, res) => {
 	if (!req.body || Object.keys(req.body).length === 0) {
 		return res.status(400).send({
-			error: false,
+			error: true,
 			status: 400,
 			message: "No se cargó ningún archivo en la base 64.",
 			messageDeveloper: "No se cargó ningún archivo en la base 64.",
@@ -61,6 +65,70 @@ exp.uploadFile = async (req, res) => {
 		path: update_file_aws.Location,
 	};
 
+	File.create(newDataFile)
+		.then((file) => {
+			res.json(file);
+		})
+		.catch((err) =>
+			res.status(500).send({
+				status: 500,
+				message: "El archivo no pudo ser subido al servido",
+				messageDeveloper: err,
+			})
+		);
+};
+
+/**
+ * * Subida de archivos
+ *
+ * @param {body} req
+ * @param {*} res
+ */
+exp.uploadFileBites = async (req, res) => {
+	if (!req.files || Object.keys(req.files).length === 0) {
+		return res.status(400).send({
+			error: true,
+			status: 400,
+			message: "No se cargó ningún archivo",
+			messageDeveloper: "No se cargó ningún archivo",
+		});
+	}
+	let { video } = req.files;
+	let { name, data, size, encoding, truncated, mimetype } = video;
+	let mimetype_split = mimetype.split("/");
+	let extension = mimetype_split[1];
+	let new_name = randomString(50);
+	console.log("===Enviando al servidor de S3");
+	let update_file_aws = await uploadFilesBitesAWS(
+		data,
+		new_name +
+			"_" +
+			name.split(".").slice(0, -1).join(".") +
+			"_" +
+			moment().toDate().getTime() +
+			"." +
+			extension,
+		mimetype
+	);
+	console.log("===Envio correcto al servidor de S3");
+	let newDataFile = {
+		name:
+			new_name +
+			"_" +
+			name.split(".").slice(0, -1).join(".") +
+			"_" +
+			moment().toDate().getTime() +
+			"." +
+			extension,
+		originalname: name,
+		size: size,
+		encoding: encoding,
+		truncated: truncated,
+		extension: extension,
+		mimetype: mimetype,
+		path: update_file_aws.Location,
+	};
+	console.log("===Guardando datos al servidor de datos");
 	File.create(newDataFile)
 		.then((file) => {
 			res.json(file);

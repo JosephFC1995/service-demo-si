@@ -2,9 +2,13 @@
 module.exports = (function () {
 	"use strict";
 	const app = require("express").Router();
-	const c_file = require("../api/controllers/File.Controller");
+	const {
+		uploadFile,
+		uploadFileBites,
+	} = require("../api/controllers/File.Controller");
 
-	app.post("/upload/video", c_file.uploadFile);
+	app.post("/upload/video", uploadFile);
+	app.post("/upload/video-bites", uploadFileBites);
 
 	return app;
 })();

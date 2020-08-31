@@ -93,9 +93,19 @@ exp.uploadFileBites = async (req, res) => {
 			messageDeveloper: "No se cargó ningún archivo",
 		});
 	}
+	console.log(req);
+	if (!req.body || Object.keys(req.body).length === 0) {
+		return res.status(400).send({
+			error: true,
+			status: 400,
+			message: "No se esta enviando datos del video.",
+			messageDeveloper: "No se cargó  datos del video.",
+		});
+	}
+	let { name, size, type } = req.body;
 	let { video } = req.files;
-	let { name, data, size, encoding, truncated, mimetype } = video;
-	let mimetype_split = mimetype.split("/");
+	let { data, encoding, truncated } = video;
+	let mimetype_split = type.split("/");
 	let extension = mimetype_split[1];
 	let new_name = randomString(50);
 	console.log("===Enviando al servidor de S3");
@@ -108,7 +118,7 @@ exp.uploadFileBites = async (req, res) => {
 			moment().toDate().getTime() +
 			"." +
 			extension,
-		mimetype
+		type
 	);
 	console.log("===Envio correcto al servidor de S3");
 	let newDataFile = {
@@ -125,7 +135,7 @@ exp.uploadFileBites = async (req, res) => {
 		encoding: encoding,
 		truncated: truncated,
 		extension: extension,
-		mimetype: mimetype,
+		mimetype: type,
 		path: update_file_aws.Location,
 	};
 	console.log("===Guardando datos al servidor de datos");
